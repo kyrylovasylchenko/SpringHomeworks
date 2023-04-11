@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Orders List</title>
+    <style>
+
+        .glovo-button {
+            background-color: #7a57d1;
+            color: #fff;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            padding: 12px 24px;
+            font-size: 1.2rem;
+            border-radius: 4px;
+            transition: background-color 0.2s ease;
+            border: none;
+            cursor: pointer;
+            box-shadow: 0px 4px 14px rgba(122, 87, 209, 0.4);
+        }
+        .glovo-button-container {
+            display: flex;
+            justify-content: center;
+        }
+
+        .glovo-button:hover {
+            background-color: #6c43c6;
+        }
+
+        body {
+            background-color: #f8f9fa;
+            font-family: 'Roboto', sans-serif;
+        }
+
+        h1 {
+            font-size: 2rem;
+            color: #1c1e21;
+            text-align: center;
+            margin-top: 2rem;
+        }
+
+        table {
+            margin: 2rem auto;
+            border-collapse: collapse;
+            width: 80%;
+            background-color: #ffffff;
+            box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        th {
+            padding: 1rem;
+            text-align: left;
+            border-bottom: 2px solid #dee2e6;
+        }
+
+        td {
+            padding: 1rem;
+            border-bottom: 1px solid #dee2e6;
+        }
+
+        input[type="submit"] {
+            background-color: #3f51b5;
+            color: #ffffff;
+            border: none;
+            padding: 1rem 2rem;
+            font-size: 1.2rem;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 2rem auto;
+            display: block;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
+        }
+
+        input[type="submit"]:hover {
+            background-color: #303f9f;
+        }
+    </style>
+</head>
+<body>
+<h1>Orders List</h1>
+<table>
+    <thead>
+    <tr>
+        <th>Order number</th>
+        <th>Cost</th>
+        <th>Products</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="order : ${orders}">
+        <td th:text="${order.getId()}"></td>
+        <td th:text="${order.getCost()}"></td>
+        <td>
+            <ul>
+                <li th:each="product : ${order.getProducts()}" th:text="${product.getName()} + ' - ' + ${product.getCost()}"></li>
+            </ul>
+        </td>
+    </tr>
+    </tbody>
+</table>
+<div class="glovo-button-container">
+    <a th:href="@{/createOrder}" class="glovo-button">Create New Order</a>
+</div>
+</body>
+</html>
