@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Order Details</title>
+    <style>
+        /* Стиль для таблицы */
+        table {
+            border-collapse: collapse;
+            width: 100%;
+        }
+
+        th, td {
+            text-align: left;
+            padding: 8px;
+            border-bottom: 1px solid #ddd;
+        }
+
+        th {
+            background-color: #f2f2f2;
+        }
+
+        /* Стиль для кнопки */
+        .glovo-button {
+            background-color: #7a57d1;
+            color: #fff;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            padding: 12px 24px;
+            font-size: 1.2rem;
+            border-radius: 4px;
+            transition: background-color 0.2s ease;
+            border: none;
+            cursor: pointer;
+            box-shadow: 0px 4px 14px rgba(122, 87, 209, 0.4);
+        }
+
+        .glovo-button:hover {
+            background-color: #6c43c6;
+        }
+    </style>
+</head>
+<body>
+<h1>Order Details</h1>
+<table>
+    <tr>
+        <th>Order number</th>
+        <td th:text="${order.getId()}"></td>
+    </tr>
+    <tr>
+        <th>Date</th>
+        <td th:text="${order.getDate()}"></td>
+    </tr>
+    <tr>
+        <th>Cost</th>
+        <td th:text="${order.getCost()}"></td>
+    </tr>
+    <tr>
+        <th>Products</th>
+        <td>
+            <ul>
+                <li th:each="product : ${order.getProducts()}"
+                    th:text="${product.getName() + ' (' + product.getCost() + ')'}"></li>
+            </ul>
+        </td>
+    </tr>
+</table>
+<br>
+<a th:href="@{/order}" class="glovo-button">Back to Orders</a>
+</body>
+</html>

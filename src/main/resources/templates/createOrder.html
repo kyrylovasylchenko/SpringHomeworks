@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Product Selection</title>
+    <style>
+        body {
+            background-color: #f8f9fa;
+            font-family: 'Roboto', sans-serif;
+        }
+
+        h1 {
+            font-size: 2rem;
+            color: #1c1e21;
+            text-align: center;
+            margin-top: 2rem;
+        }
+
+        table {
+            margin: 2rem auto;
+            border-collapse: collapse;
+            width: 80%;
+            background-color: #ffffff;
+            box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        th {
+            padding: 1rem;
+            text-align: left;
+            border-bottom: 2px solid #dee2e6;
+        }
+
+        td {
+            padding: 1rem;
+            border-bottom: 1px solid #dee2e6;
+        }
+
+        input[type="checkbox"] {
+            transform: scale(1.5);
+            margin-right: 1rem;
+        }
+
+        input[type="submit"] {
+            background-color: #3f51b5;
+            color: #ffffff;
+            border: none;
+            padding: 1rem 2rem;
+            font-size: 1.2rem;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 2rem auto;
+            display: block;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
+        }
+
+        input[type="submit"]:hover {
+            background-color: #303f9f;
+        }
+    </style>
+</head>
+<body>
+<h1>Product Selection</h1>
+<form method="post" th:action="@{/createOrder}">
+    <table>
+        <thead>
+        <tr>
+            <th>Product</th>
+            <th>Price</th>
+            <th>Select</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="product : ${products}">
+            <td th:text="${product.getName()}"></td>
+            <td th:text="${product.getCost()}"></td>
+            <td><input type="checkbox" th:name="'selectedProducts'" th:value="${product.getId()}" /></td>
+        </tr>
+        </tbody>
+    </table>
+    <input type="submit" value="Create Order" />
+</form>
+</body>
+</html>
