@@ -34,7 +34,7 @@ public class OrderService {
         return orderRepository.getAll();
     }
 
-    public void addOrder(List<Integer> productsId){
+    public void createOrder(List<Integer> productsId){
         List<Product> products = new ArrayList<>();
         productsId.forEach(id -> products.add(productService.findById(id)));
         int orderCost = products.stream().mapToInt(Product::getCost).sum();
