@@ -36,4 +36,24 @@ public class ProductRepository {
         return jdbcTemplate.query("SELECT * FROM products", new ProductRowMapper());
     }
 
-}
+    public void save(Product product) {
+        jdbcTemplate.update("INSERT INTO products (name, cost) VALUES (?,?)", product.getName(), product.getCost());
+    }
+
+    public void delete(int id) {
+        try {
+            jdbcTemplate.update("DELETE FROM products WHERE id = " + id);
+        }catch (EmptyResultDataAccessException exc){
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Order not found", exc);
+        }
+    }
+
+    public void update(Product product) {
+        try {
+            jdbcTemplate.update("UPDATE products set name = ?, cost = ? where id = ?", product.getName(), product.getCost(), product.getId());
+        }catch (EmptyResultDataAccessException exc){
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Order not found", exc);
+        }
+    }
+    }
+

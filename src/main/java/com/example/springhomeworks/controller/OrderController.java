@@ -42,7 +42,7 @@ public class OrderController {
     @PostMapping("/createOrder")
     public RedirectView createOrder(@RequestParam("selectedProducts") List<Integer> productsId){
 
-        orderService.addOrder(productsId);
+        orderService.createOrder(productsId);
 
         return new RedirectView("/order");
     }

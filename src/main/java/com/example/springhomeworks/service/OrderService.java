@@ -12,6 +12,7 @@ import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class OrderService {
@@ -34,7 +35,7 @@ public class OrderService {
         return orderRepository.getAll();
     }
 
-    public void addOrder(List<Integer> productsId){
+    public void createOrder(List<Integer> productsId){
         List<Product> products = new ArrayList<>();
         productsId.forEach(id -> products.add(productService.findById(id)));
         int orderCost = products.stream().mapToInt(Product::getCost).sum();
@@ -43,8 +44,31 @@ public class OrderService {
         orderRepository.save(order);
 
         int lastOrderId = orderRepository.getLastOrderId();
-        productsId.forEach(productId -> orderProductsRepository.saveOrderAndProduct(lastOrderId, productId));
+        productsId.forEach(id -> orderProductsRepository.saveOrderAndProduct(lastOrderId, id));
 
+    }
+
+    public void createOrder(Order order){
+        createOrder(order.getProducts().stream().map(Product::getId).toList());
+    }
+
+    public void delete(int id) {
+        orderProductsRepository.deleteByOrder(id);
+        orderRepository.delete(id);
+    }
+
+    public void update(Order order) {
+
+        orderProductsRepository.deleteByOrder(order.getId());
+
+        List<Integer> productIds = order.getProducts().stream().map(Product::getId).toList();
+        productIds.forEach(id -> orderProductsRepository.saveOrderAndProduct(order.getId(), id));
+
+        Timestamp orderUpdateTime = Timestamp.valueOf(LocalDateTime.now());
+        int cost = order.getProducts().stream().mapToInt(Product::getCost).sum();
+        Order updatedOrder = Order.builder().id(order.getId()).cost(cost).date(orderUpdateTime).build();
+
+        orderRepository.update(updatedOrder);
 
     }
 }

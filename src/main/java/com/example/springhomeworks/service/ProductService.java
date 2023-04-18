@@ -1,20 +1,20 @@
 package com.example.springhomeworks.service;
 
 import com.example.springhomeworks.model.Product;
+import com.example.springhomeworks.repository.OrderProductsRepository;
 import com.example.springhomeworks.repository.ProductRepository;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-import org.springframework.web.server.ResponseStatusException;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Service
 public class ProductService {
     private final ProductRepository productRepository;
+    private final OrderProductsRepository orderProductsRepository;
 
-    public ProductService(ProductRepository productRepository) {
+    public ProductService(ProductRepository productRepository, OrderProductsRepository orderProductsRepository) {
         this.productRepository = productRepository;
+        this.orderProductsRepository = orderProductsRepository;
     }
 
     public List<Product> getAll(){
@@ -26,4 +26,16 @@ public class ProductService {
     }
 
 
+    public void save(Product product) {
+        productRepository.save(product);
+    }
+
+    public void delete(int id) {
+        orderProductsRepository.deleteByProduct(id);
+        productRepository.delete(id);
+    }
+
+    public void update(Product product) {
+        productRepository.update(product);
+    }
 }
