@@ -3,40 +3,48 @@ package com.example.springhomeworks.service;
 
 import com.example.springhomeworks.model.Order;
 import com.example.springhomeworks.model.Product;
-import org.springframework.http.HttpStatus;
+import com.example.springhomeworks.repository.OrderProductsRepository;
+import com.example.springhomeworks.repository.OrderRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import org.springframework.web.server.ResponseStatusException;
-
+import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
 @Service
 public class OrderService {
-    private final List<Order> orders = new ArrayList<>();
-    private static int currentOrderId = 1;
+   private final OrderRepository orderRepository;
+   private final OrderProductsRepository orderProductsRepository;
 
     private final ProductService productService;
-
-    public OrderService(ProductService productService) {
+    @Autowired
+    public OrderService(OrderRepository orderRepository, OrderProductsRepository orderProductsRepository, ProductService productService) {
+        this.orderRepository = orderRepository;
+        this.orderProductsRepository = orderProductsRepository;
         this.productService = productService;
     }
 
     public Order findById(int id){
-        return orders.stream().filter(order -> order.getId() == id).findFirst().orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Order not found"));
+        return orderRepository.getById(id);
     }
 
     public List<Order> getAll(){
-        return orders;
+        return orderRepository.getAll();
     }
 
     public void addOrder(List<Integer> productsId){
         List<Product> products = new ArrayList<>();
         productsId.forEach(id -> products.add(productService.findById(id)));
-        int cost = products.stream().mapToInt(Product::getCost).sum();
-        orders.add(Order.builder().id(currentOrderId).products(products).date(LocalDateTime.now()).cost(cost).build());
-        currentOrderId++;
+        int orderCost = products.stream().mapToInt(Product::getCost).sum();
+
+        Order order = Order.builder().date(Timestamp.valueOf(LocalDateTime.now())).cost(orderCost).products(products).build();
+        orderRepository.save(order);
+
+        int lastOrderId = orderRepository.getLastOrderId();
+        productsId.forEach(productId -> orderProductsRepository.saveOrderAndProduct(lastOrderId, productId));
+
 
     }
 }

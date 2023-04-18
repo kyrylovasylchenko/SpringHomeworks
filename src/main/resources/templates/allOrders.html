@@ -91,11 +91,7 @@
     <tr th:each="order : ${orders}">
         <td th:text="${order.getId()}"></td>
         <td th:text="${order.getCost()}"></td>
-        <td>
-            <ul>
-                <li th:each="product : ${order.getProducts()}" th:text="${product.getName()} + ' - ' + ${product.getCost()}"></li>
-            </ul>
-        </td>
+        <td th:text="${order.getDate()}"></td>
     </tr>
     </tbody>
 </table>
