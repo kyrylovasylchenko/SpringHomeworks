@@ -23,7 +23,7 @@ public class OrderProductsRepository {
     public List<Product> getProductsByOrderId(int id){
         try{
             return jdbcTemplate.query("SELECT products.id, products.name, products.cost FROM products " +
-                    "JOIN product_order on product_order.product_id = products.id" +
+                    "JOIN product_order on product_order.product_id = products.id " +
                     "WHERE product_order.order_id = " + id, new ProductRowMapper());
         }catch (EmptyResultDataAccessException exc){
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Products for order not found", exc);
