@@ -8,6 +8,7 @@ import org.springframework.data.repository.query.Param;
 
 import java.util.List;
 
+@Repository
 public interface OrderProductsRepository extends CrudRepository<OrderProducts, Integer> {
 
     @Query("SELECT product_id FROM product_order WHERE order_id = :id")
