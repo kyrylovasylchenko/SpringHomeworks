@@ -1,8 +1,11 @@
 package com.example.springhomeworks.service;
 
 
-import com.example.springhomeworks.model.Order;
-import com.example.springhomeworks.model.Product;
+import com.example.springhomeworks.conterter.OrderConverter;
+import com.example.springhomeworks.entity.Order;
+import com.example.springhomeworks.entity.OrderProducts;
+import com.example.springhomeworks.entity.Product;
+import com.example.springhomeworks.model.OrderDTO;
 import com.example.springhomeworks.repository.OrderProductsRepository;
 import com.example.springhomeworks.repository.OrderRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,13 +15,11 @@ import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 public class OrderService {
    private final OrderRepository orderRepository;
    private final OrderProductsRepository orderProductsRepository;
-
     private final ProductService productService;
     @Autowired
     public OrderService(OrderRepository orderRepository, OrderProductsRepository orderProductsRepository, ProductService productService) {
@@ -27,48 +28,50 @@ public class OrderService {
         this.productService = productService;
     }
 
-    public Order findById(int id){
-        return orderRepository.getById(id);
+    public OrderDTO findById(int orderId){
+        Order order = orderRepository.findById(orderId).orElseThrow();
+        OrderDTO orderDTO = OrderConverter.orderToOrderDTO(order);
+        List<Integer> productsId = orderProductsRepository.findAllProductIdByOrderId(orderId);
+        List<Product> products = new ArrayList<>();
+        productsId.forEach(id -> products.add(productService.findById(id)));
+        orderDTO.setProducts(products);
+        return orderDTO;
     }
 
     public List<Order> getAll(){
-        return orderRepository.getAll();
+        List<Order> orders = new ArrayList<>();
+        orderRepository.findAll().forEach(orders::add);
+        return orders;
     }
 
     public void createOrder(List<Integer> productsId){
         List<Product> products = new ArrayList<>();
         productsId.forEach(id -> products.add(productService.findById(id)));
-        int orderCost = products.stream().mapToInt(Product::getCost).sum();
+        double orderCost = products.stream().mapToDouble(Product::getCost).sum();
 
-        Order order = Order.builder().date(Timestamp.valueOf(LocalDateTime.now())).cost(orderCost).products(products).build();
-        orderRepository.save(order);
+        Order order = Order.builder().date(Timestamp.valueOf(LocalDateTime.now())).cost(orderCost).build();
+        Order savedOrder = orderRepository.save(order);
 
-        int lastOrderId = orderRepository.getLastOrderId();
-        productsId.forEach(id -> orderProductsRepository.saveOrderAndProduct(lastOrderId, id));
+        productsId.forEach(id -> orderProductsRepository.save(OrderProducts.builder().orderId(savedOrder.getId()).productId(id).build()));
 
     }
 
-    public void createOrder(Order order){
-        createOrder(order.getProducts().stream().map(Product::getId).toList());
+    public void createOrder(OrderDTO orderDTO){
+        createOrder(orderDTO.getProducts().stream().map(Product::getId).toList());
     }
 
     public void delete(int id) {
-        orderProductsRepository.deleteByOrder(id);
-        orderRepository.delete(id);
+        orderProductsRepository.deleteAllByOrderId(id);
+        orderRepository.deleteById(id);
     }
 
-    public void update(Order order) {
+    public void update(OrderDTO orderDTO) {
 
-        orderProductsRepository.deleteByOrder(order.getId());
+        orderProductsRepository.deleteAllByOrderId(orderDTO.getId());
 
-        List<Integer> productIds = order.getProducts().stream().map(Product::getId).toList();
-        productIds.forEach(id -> orderProductsRepository.saveOrderAndProduct(order.getId(), id));
+        orderRepository.deleteById(orderDTO.getId());
+        this.createOrder(orderDTO);
 
-        Timestamp orderUpdateTime = Timestamp.valueOf(LocalDateTime.now());
-        int cost = order.getProducts().stream().mapToInt(Product::getCost).sum();
-        Order updatedOrder = Order.builder().id(order.getId()).cost(cost).date(orderUpdateTime).build();
-
-        orderRepository.update(updatedOrder);
 
     }
 }

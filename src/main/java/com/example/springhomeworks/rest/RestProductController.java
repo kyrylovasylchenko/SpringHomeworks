@@ -1,6 +1,6 @@
 package com.example.springhomeworks.rest;
 
-import com.example.springhomeworks.model.Product;
+import com.example.springhomeworks.entity.Product;
 import com.example.springhomeworks.service.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/v1/product")
+@RequestMapping("/v1/products")
 public class RestProductController {
 
     private final ProductService productService;

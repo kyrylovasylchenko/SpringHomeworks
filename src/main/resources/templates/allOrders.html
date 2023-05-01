@@ -88,10 +88,10 @@
     </tr>
     </thead>
     <tbody>
-    <tr th:each="order : ${orders}">
-        <td th:text="${order.getId()}"></td>
-        <td th:text="${order.getCost()}"></td>
-        <td th:text="${order.getDate()}"></td>
+    <tr th:each="orderDTO : ${orders}">
+        <td th:text="${orderDTO.getId()}"></td>
+        <td th:text="${orderDTO.getCost()}"></td>
+        <td th:text="${orderDTO.getDate()}"></td>
     </tr>
     </tbody>
 </table>

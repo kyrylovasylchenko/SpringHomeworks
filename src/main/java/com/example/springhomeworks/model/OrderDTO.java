@@ -1,12 +1,12 @@
 package com.example.springhomeworks.model;
 
+import com.example.springhomeworks.entity.Product;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.sql.Timestamp;
-import java.time.LocalDateTime;
 
 import java.util.List;
 
@@ -14,9 +14,9 @@ import java.util.List;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class Order {
+public class OrderDTO {
     private int id;
     private Timestamp date;
-    private int cost;
+    private double cost;
     private List<Product> products;
 }
