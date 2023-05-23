@@ -1,8 +1,9 @@
 package com.example.springhomeworks.rest;
 
-import com.example.springhomeworks.model.Product;
+import com.example.springhomeworks.entity.Product;
 import com.example.springhomeworks.service.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;

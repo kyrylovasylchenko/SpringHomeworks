@@ -1,6 +1,7 @@
 package com.example.springhomeworks.rest;
 
-import com.example.springhomeworks.model.Order;
+import com.example.springhomeworks.entity.Order;
+import com.example.springhomeworks.model.OrderDTO;
 import com.example.springhomeworks.service.OrderService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -19,8 +20,9 @@ public class RestOrderController {
     }
 
     @GetMapping("/{id}")
-    public Order get(@PathVariable int id){
-        return orderService.findById(id);
+    public OrderDTO get(@PathVariable int id){
+        OrderDTO orderDTO = orderService.findById(id);
+        return orderDTO;
     }
 
     @GetMapping
@@ -29,14 +31,14 @@ public class RestOrderController {
     }
 
     @PatchMapping("/{id}")
-    public void update(@RequestBody Order order, @PathVariable int id){
-        order.setId(id);
-        orderService.update(order);
+    public void update(@RequestBody OrderDTO orderDTO, @PathVariable int id){
+        orderDTO.setId(id);
+        orderService.update(orderDTO);
     }
 
     @PostMapping
-    public void save(@RequestBody Order order){
-        orderService.createOrder(order);
+    public void save(@RequestBody OrderDTO orderDTO){
+        orderService.createOrder(orderDTO);
     }
 
     @DeleteMapping("/{id}")

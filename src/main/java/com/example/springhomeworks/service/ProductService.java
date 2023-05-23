@@ -1,10 +1,11 @@
 package com.example.springhomeworks.service;
 
-import com.example.springhomeworks.model.Product;
+import com.example.springhomeworks.entity.Product;
 import com.example.springhomeworks.repository.OrderProductsRepository;
 import com.example.springhomeworks.repository.ProductRepository;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -18,24 +19,27 @@ public class ProductService {
     }
 
     public List<Product> getAll(){
-        return productRepository.getAll();
+        List<Product> products = new ArrayList<>();
+        productRepository.findAll().forEach(products::add);
+        return products;
     }
 
     public Product findById(int id){
-        return productRepository.getById(id);
+        return productRepository.findById(id).orElseThrow();
     }
 
 
-    public void save(Product product) {
-        productRepository.save(product);
+    public Product save(Product product) {
+        return productRepository.save(product);
     }
 
     public void delete(int id) {
-        orderProductsRepository.deleteByProduct(id);
-        productRepository.delete(id);
+        orderProductsRepository.deleteAllByProductId(id);
+        productRepository.deleteById(id);
     }
 
-    public void update(Product product) {
-        productRepository.update(product);
+    public Product update(Product product) {
+        orderProductsRepository.deleteAllByProductId(product.getId());
+       return productRepository.save(product);
     }
 }
