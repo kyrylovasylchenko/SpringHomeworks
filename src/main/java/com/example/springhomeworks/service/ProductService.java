@@ -29,8 +29,8 @@ public class ProductService {
     }
 
 
-    public void save(Product product) {
-        productRepository.save(product);
+    public Product save(Product product) {
+        return productRepository.save(product);
     }
 
     public void delete(int id) {
@@ -38,8 +38,8 @@ public class ProductService {
         productRepository.deleteById(id);
     }
 
-    public void update(Product product) {
+    public Product update(Product product) {
         orderProductsRepository.deleteAllByProductId(product.getId());
-        productRepository.save(product);
+       return productRepository.save(product);
     }
 }

@@ -44,7 +44,7 @@ public class OrderService {
         return orders;
     }
 
-    public void createOrder(List<Integer> productsId){
+    public OrderDTO createOrder(List<Integer> productsId){
         List<Product> products = new ArrayList<>();
         productsId.forEach(id -> products.add(productService.findById(id)));
         double orderCost = products.stream().mapToDouble(Product::getCost).sum();
@@ -54,10 +54,11 @@ public class OrderService {
 
         productsId.forEach(id -> orderProductsRepository.save(OrderProducts.builder().orderId(savedOrder.getId()).productId(id).build()));
 
+        return OrderDTO.builder().date(savedOrder.getDate()).cost(orderCost).products(products).id(savedOrder.getId()).build();
     }
 
-    public void createOrder(OrderDTO orderDTO){
-        createOrder(orderDTO.getProducts().stream().map(Product::getId).toList());
+    public OrderDTO createOrder(OrderDTO orderDTO){
+        return createOrder(orderDTO.getProducts().stream().map(Product::getId).toList());
     }
 
     public void delete(int id) {
@@ -65,13 +66,12 @@ public class OrderService {
         orderRepository.deleteById(id);
     }
 
-    public void update(OrderDTO orderDTO) {
+    public OrderDTO update(OrderDTO orderDTO) {
+
 
         orderProductsRepository.deleteAllByOrderId(orderDTO.getId());
 
         orderRepository.deleteById(orderDTO.getId());
-        this.createOrder(orderDTO);
-
-
+        return this.createOrder(orderDTO);
     }
 }
